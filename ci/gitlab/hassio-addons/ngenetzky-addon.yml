@@ -59,7 +59,8 @@ stages:
 .preflight: &preflight
   stage: preflight
   tags:
-    - preflight
+    - gitlab-org-docker
+    # - preflight
 
 # Generic build template
 .build: &build
@@ -154,7 +155,8 @@ stages:
       docker push \
         "${DOCKER_HUB_ORG}/${ADDON_SLUG}-${ADDON_ARCH}:${TAG}"
   tags:
-    - deploy
+    - gitlab-org-docker
+    # - deploy
 
 # Generic manifest template
 .manifest: &manifest
@@ -245,7 +247,8 @@ stages:
       docker manifest push \
         "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}"
   tags:
-    - manifest
+    - gitlab-org-docker
+    # - manifest
   except:
     - /^(?!master).+@/
 
@@ -262,7 +265,8 @@ stages:
         --repository "${REPOSITORY}" \
         --addon "${ADDON_GITHUB_REPO}"
   tags:
-    - publish
+    - gitlab-org-docker
+    # - publish
   except:
     - /^(?!master).+@/
 
@@ -356,8 +360,9 @@ build:armhf:
     variables:
       - $ADDON_ARMHF == "true"
   tags:
-    - build
-    - armhf
+    - gitlab-org-docker
+    # - build
+    # - armhf
 
 build:armv7:
   <<: *build
@@ -368,8 +373,9 @@ build:armv7:
     variables:
       - $ADDON_ARMV7 == "true"
   tags:
-    - build
-    - armv7
+    - gitlab-org-docker
+    # - build
+    # - armv7
 
 build:aarch64:
   <<: *build
@@ -380,8 +386,9 @@ build:aarch64:
     variables:
       - $ADDON_AARCH64 == "true"
   tags:
-    - build
-    - aarch64
+    - gitlab-org-docker
+    # - build
+    # - aarch64
 
 build:i386:
   <<: *build
@@ -392,8 +399,9 @@ build:i386:
     variables:
       - $ADDON_I386 == "true"
   tags:
-    - build
-    - i386
+    - gitlab-org-docker
+    # - build
+    # - i386
 
 build:amd64:
   <<: *build
@@ -404,8 +412,9 @@ build:amd64:
     variables:
       - $ADDON_AMD64 == "true"
   tags:
-    - build
-    - amd64
+    - gitlab-org-docker
+    # - build
+    # - amd64
 
 # Deploy jobs
 deploy:armhf:
