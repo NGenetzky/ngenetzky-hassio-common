@@ -13,3 +13,6 @@
 [submodule "submodules/home-assistant/hassio-builder"]
 	path = submodules/home-assistant/hassio-builder
 	url = https://github.com/home-assistant/hassio-builder.git
+[submodule "submodules/home-assistant/home-assistant.io"]
+	path = submodules/home-assistant/home-assistant.io
+	url = https://github.com/home-assistant/home-assistant.io.git
