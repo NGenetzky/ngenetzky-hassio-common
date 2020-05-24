@@ -4,9 +4,9 @@ image: docker:stable
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
-  ADDON_GITHUB_REPO: "hassio-addons/addon-example"
+  ADDON_GITHUB_REPO: "ngenetzky/ngenetzky-hassio-common"
   ADDON_SLUG: "example"
-  ADDON_TARGET: "example"
+  ADDON_TARGET: "submodules/hassio-addons/addon-example/example"
 
   ADDON_AARCH64: "true"
   ADDON_AMD64: "true"
@@ -26,19 +26,19 @@ variables:
 
   ADDON_QEMU: "false"
 
-  ADDON_PUBLISH: "true"
+  ADDON_PUBLISH: "false"
   ADDONS_REPO_STABLE: "hassio-addons/repository"
   ADDONS_REPO_BETA: "hassio-addons/repository-beta"
   ADDONS_REPO_EDGE: "hassio-addons/repository-edge"
 
   PREFLIGHT_HADOLINT: "true"
-  PREFLIGHT_JSONLINT: "true"
-  PREFLIGHT_MARKDOWNLINT: "true"
-  PREFLIGHT_SHELLCHECK: "true"
-  PREFLIGHT_YAMLLINT: "true"
+  PREFLIGHT_JSONLINT: "false"
+  PREFLIGHT_MARKDOWNLINT: "false"
+  PREFLIGHT_SHELLCHECK: "false"
+  PREFLIGHT_YAMLLINT: "false"
 
   DOCKER_DRIVER: overlay2
-  DOCKER_HUB_ORG: hassioaddons
+  DOCKER_HUB_ORG: ngenetzky
 
 stages:
   - preflight
