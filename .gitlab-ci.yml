@@ -1,0 +1,30 @@
+---
+image: docker:stable
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_DRIVER: overlay2
+
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#git-submodule-strategy
+  # GIT_SUBMODULE_STRATEGY: 'none' # 'none'|'normal'|'recursive'
+
+stages:
+  - preflight
+  - build
+  - deploy
+  - manifest
+  - publish
+
+# before_script:
+  # # git submodules
+  # # REF: https://docs.gitlab.com/ee/ci/git_submodules.html
+  # - git submodule sync --recursive
+  # - git submodule update --init --recursive
+
+################################################################################
+
+include:
+  # - local: /ci/gitlab/hassio-addons/ngenetzky-addon.yml
+  - local: /ci/gitlab/hassio-addons/addon-example.yml
+
+################################################################################
