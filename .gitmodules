@@ -1,0 +1,6 @@
+[submodule "submodules/hassio-addons/organization"]
+	path = submodules/hassio-addons/organization
+	url = https://github.com/hassio-addons/organization.git
+[submodule "submodules/hassio-addons/addon-example"]
+	path = submodules/hassio-addons/addon-example
+	url = https://gitlab.com/hassio-addons/addon-example.git
