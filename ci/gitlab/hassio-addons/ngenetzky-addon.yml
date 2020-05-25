@@ -7,6 +7,7 @@ variables:
   ADDON_GITHUB_REPO: "ngenetzky/ngenetzky-hassio-common"
   ADDON_SLUG: "example"
   ADDON_TARGET: "submodules/hassio-addons/addon-example/example"
+  DOCKER_IMAGE_NAME: "hassio-example"
 
   ADDON_AARCH64: "true"
   ADDON_AMD64: "true"
@@ -77,7 +78,7 @@ stages:
         --username gitlab-ci-token \
         --password-stdin \
         registry.gitlab.com
-    - docker pull "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:cache" || true
+    - docker pull "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:cache" || true
     - |
       if [ "${ADDON_QEMU}" = "true" ] && [ "${ADDON_ARCH}" = "aarch64" ]; then
         apk --no-cache add curl
@@ -109,13 +110,13 @@ stages:
         --build-arg "BUILD_ARCH=${ADDON_ARCH}" \
         --build-arg "BUILD_REF=${CI_COMMIT_SHA}" \
         --build-arg "BUILD_VERSION=${VERSION}" \
-        --cache-from "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:cache" \
+        --cache-from "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:cache" \
         --tag \
-          "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}" \
+          "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}" \
         "${ADDON_TARGET}"
     - |
       docker push \
-        "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}"
+        "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}"
 
 # Generic deploy template
 .deploy: &deploy
@@ -123,7 +124,7 @@ stages:
   stage: deploy
   before_script:
     - docker info
-    - docker pull "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}"
+    - docker pull "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}"
     - |
       echo "${CI_JOB_TOKEN}" | docker login \
         --username gitlab-ci-token \
@@ -136,24 +137,24 @@ stages:
   script:
     - |
       docker tag \
-        "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}" \
-        "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:cache"
-    - docker push "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:cache"
+        "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}" \
+        "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:cache"
+    - docker push "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:cache"
     - TAG="${CI_COMMIT_TAG#v}"
     - TAG="${TAG:-${CI_COMMIT_SHA:0:7}}"
     - |
       docker tag \
-        "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}" \
-        "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${ADDON_ARCH}-${TAG}"
+        "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}" \
+        "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${ADDON_ARCH}-${TAG}"
     - |
       docker push \
-        "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${ADDON_ARCH}-${TAG}"
+        "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${ADDON_ARCH}-${TAG}"
     - |
       docker tag \
-        "${CI_REGISTRY_IMAGE}/${ADDON_ARCH}:${CI_COMMIT_SHA}" \
-        "${DOCKER_HUB_ORG}/${ADDON_SLUG}-${ADDON_ARCH}:${TAG}"
+        "${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${CI_COMMIT_SHA}" \
+        "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${TAG}"
       docker push \
-        "${DOCKER_HUB_ORG}/${ADDON_SLUG}-${ADDON_ARCH}:${TAG}"
+        "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}-${ADDON_ARCH}:${TAG}"
   tags:
     - gitlab-org-docker
     # - deploy
@@ -179,12 +180,12 @@ stages:
       if [ "${ADDON_AARCH64}" = "true" ]; then
         docker manifest create \
           --amend \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:aarch64-${REF}"
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:aarch64-${REF}"
 
         docker manifest annotate \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:aarch64-${REF}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:aarch64-${REF}" \
           --os=linux \
           --arch=arm64 \
           --variant="${ADDON_AARCH64_VARIANT}"
@@ -193,12 +194,12 @@ stages:
       if [ "${ADDON_AMD64}" = "true" ]; then
         docker manifest create \
           --amend \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:amd64-${REF}"
-          
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:amd64-${REF}"
+
         docker manifest annotate \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:amd64-${REF}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:amd64-${REF}" \
           --os=linux \
           --arch=amd64
       fi
@@ -206,12 +207,12 @@ stages:
       if [ "${ADDON_ARMHF}" = "true" ]; then
         docker manifest create \
           --amend \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:armhf-${REF}"
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:armhf-${REF}"
 
         docker manifest annotate \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:armhf-${REF}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:armhf-${REF}" \
           --os=linux \
           --arch=arm \
           --variant="${ADDON_ARMHF_VARIANT}"
@@ -220,12 +221,12 @@ stages:
       if [ "${ADDON_ARMV7}" = "true" ]; then
         docker manifest create \
           --amend \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:armv7-${REF}"
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:armv7-${REF}"
 
         docker manifest annotate \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:armv7-${REF}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:armv7-${REF}" \
           --os=linux \
           --arch=arm \
           --variant="${ADDON_ARMV7_VARIANT}"
@@ -234,18 +235,18 @@ stages:
       if [ "${ADDON_I386}" = "true" ]; then
         docker manifest create \
           --amend \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:i386-${REF}"
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:i386-${REF}"
 
         docker manifest annotate \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}" \
-          "${DOCKER_HUB_ORG}/${ADDON_SLUG}:i386-${REF}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}" \
+          "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:i386-${REF}" \
           --os=linux \
           --arch=386
       fi
     - |
       docker manifest push \
-        "${DOCKER_HUB_ORG}/${ADDON_SLUG}:${TAG}"
+        "${DOCKER_HUB_ORG}/${DOCKER_IMAGE_NAME}:${TAG}"
   tags:
     - gitlab-org-docker
     # - manifest
