@@ -9,11 +9,11 @@ variables:
   # GIT_SUBMODULE_STRATEGY: 'none' # 'none'|'normal'|'recursive'
 
 stages:
-  - preflight
+  # - preflight
   - build
-  - deploy
-  - manifest
-  - publish
+  # - deploy
+  # - manifest
+  # - publish
 
 # before_script:
   # # git submodules
@@ -23,8 +23,15 @@ stages:
 
 ################################################################################
 
-include:
+# include:
   # - local: /ci/gitlab/hassio-addons/ngenetzky-addon.yml
-  - local: /ci/gitlab/hassio-addons/addon-example.yml
+  # - local: /ci/gitlab/hassio-addons/addon-example.yml
 
 ################################################################################
+
+addon_example:
+  stage: build
+  trigger:
+    include:
+      - local: /ci/gitlab/hassio-addons/addon-example.yml
+    # strategy: depend # parent pipeline to depend on the status of the child pipeline
