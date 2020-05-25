@@ -6,6 +6,7 @@ variables:
   ADDON_GITHUB_REPO: "ngenetzky/ngenetzky-hassio-common"
   ADDON_SLUG: "example"
   ADDON_TARGET: "submodules/hassio-addons/addon-example/example"
+  DOCKER_IMAGE_NAME: "hassio-example"
 
   ADDON_AARCH64: "true"
   ADDON_AMD64: "true"
