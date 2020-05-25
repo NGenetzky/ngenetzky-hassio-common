@@ -1,0 +1,36 @@
+---
+include:
+  - local: /ci/gitlab/hassio-addons/ngenetzky-addon.yml
+
+variables:
+  ADDON_GITHUB_REPO: "ngenetzky/ngenetzky-hassio-common"
+  ADDON_SLUG: "example"
+  ADDON_TARGET: "submodules/hassio-addons/addon-example/example"
+  DOCKER_IMAGE_NAME: "hassio-example"
+
+  ADDON_AARCH64: "true"
+  ADDON_AMD64: "true"
+  ADDON_ARMHF: "true"
+  ADDON_ARMV7: "true"
+  ADDON_I386: "true"
+
+  ADDON_AARCH64_BASE: "hassioaddons/base-aarch64:7.2.0"
+  ADDON_AMD64_BASE: "hassioaddons/base-amd64:7.2.0"
+  ADDON_ARMHF_BASE: "hassioaddons/base-armhf:7.2.0"
+  ADDON_ARMV7_BASE: "hassioaddons/base-armv7:7.2.0"
+  ADDON_I386_BASE: "hassioaddons/base-i386:7.2.0"
+
+  ADDON_QEMU: "false"
+
+  ADDON_PUBLISH: "false"
+
+  PREFLIGHT_HADOLINT: "true"
+  PREFLIGHT_JSONLINT: "false"
+  PREFLIGHT_MARKDOWNLINT: "false"
+  PREFLIGHT_SHELLCHECK: "true"
+  PREFLIGHT_YAMLLINT: "false"
+
+  DOCKER_HUB_ORG: ngenetzky
+
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#git-submodule-strategy
+  GIT_SUBMODULE_STRATEGY: 'normal' # 'none'|'normal'|'recursive'
