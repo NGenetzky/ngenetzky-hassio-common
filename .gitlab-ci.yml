@@ -31,7 +31,19 @@ stages:
 
 addon_example:
   stage: build
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: "on_success" # execute only if previous stage succeeded.
+
+    - if: "$CI_PIPELINE_SOURCE == 'push'"
+      changes:
+      - ci/gitlab/hassio-addons/ngenetzky-addon.yml
+      - ci/gitlab/hassio-addons/addon-example.yml
+      - submodules/hassio-addons/addon-example/
+      when: "on_success" # execute only if previous stage succeeded.
+
+    - when: never # explicitly end 'rules' with 'never' build.
   trigger:
     include:
       - local: /ci/gitlab/hassio-addons/addon-example.yml
-    # strategy: depend # parent pipeline to depend on the status of the child pipeline
+    strategy: depend # parent pipeline to depend on the status of the child pipeline
