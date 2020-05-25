@@ -1,0 +1,21 @@
+[submodule "submodules/hassio-addons/organization"]
+	path = submodules/hassio-addons/organization
+	url = https://github.com/hassio-addons/organization.git
+[submodule "submodules/hassio-addons/addon-example"]
+	path = submodules/hassio-addons/addon-example
+	url = https://gitlab.com/hassio-addons/addon-example.git
+[submodule "submodules/home-assistant/hassio-addons"]
+	path = submodules/home-assistant/hassio-addons
+	url = https://github.com/home-assistant/hassio-addons.git
+[submodule "submodules/home-assistant/ci-azure"]
+	path = submodules/home-assistant/ci-azure
+	url = https://github.com/home-assistant/ci-azure.git
+[submodule "submodules/home-assistant/hassio-builder"]
+	path = submodules/home-assistant/hassio-builder
+	url = https://github.com/home-assistant/hassio-builder.git
+[submodule "submodules/home-assistant/home-assistant.io"]
+	path = submodules/home-assistant/home-assistant.io
+	url = https://github.com/home-assistant/home-assistant.io.git
+[submodule "submodules/hassio-addons/repository"]
+	path = submodules/hassio-addons/repository
+	url = https://github.com/hassio-addons/repository.git
