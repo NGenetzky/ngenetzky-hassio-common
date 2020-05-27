@@ -19,3 +19,6 @@
 [submodule "submodules/hassio-addons/repository"]
 	path = submodules/hassio-addons/repository
 	url = https://github.com/hassio-addons/repository.git
+[submodule "submodules/terraform-libvirt-ubuntu-examples"]
+	path = submodules/terraform-libvirt-ubuntu-examples
+	url = https://github.com/fabianlee/terraform-libvirt-ubuntu-examples.git
