@@ -108,6 +108,11 @@ resource "libvirt_domain" "domain-ubuntu" {
     listen_type = "address"
     autoport    = "true"
   }
+
+  provisioner "file" {
+    source      = "file/supervised-installer-safer.sh"
+    destination = "/root/supervised-installer-safer.sh"
+  }
 }
 
 terraform {
