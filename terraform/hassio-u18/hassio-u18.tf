@@ -6,36 +6,48 @@ variable "memoryMB" { default = 1024 * 1 }
 variable "cpu" { default = 1 }
 variable "prefixIP" { default = "192.168.122" }
 variable "octetIP" { default = "32" }
+variable "libvirt_pool" { default = "default" }
+variable "libvirt_uri" { default = "qemu:///system" }
 
-# 20Mb for each additional data disk
-variable "diskBytes" { default = 1024 * 1024 * 20 }
+# 161.79 gigabytes for each additional data disk
+variable "diskBytes" { default = 160 * 1024 * 1024 * 1024 }
 
 
 
 # instance the provider
 provider "libvirt" {
-  uri = "qemu:///system"
+  uri = var.libvirt_uri
 }
 
 # fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "os_image" {
-  name   = "${var.hostname}-os_image"
-  pool   = "default"
+resource "libvirt_volume" "cloudimg" {
+  name   = "${var.hostname}-bionic-server-cloudimg-amd64.img"
+  pool   = var.libvirt_pool
+  format = "raw" # .img
   source = "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
+}
+
+resource "libvirt_volume" "os_image" {
+  name   = "${var.hostname}-os.qcow2"
+  pool   = var.libvirt_pool
+  size   = var.diskBytes
   format = "qcow2"
+
+  # Uses the cloudimg as backing_disk/base_volume.
+  base_volume_name = "${var.hostname}-bionic-server-cloudimg-amd64.img"
 }
 
 # extra data disk for xfs
 resource "libvirt_volume" "disk_data1" {
-  name   = "${var.hostname}-disk-xfs"
-  pool   = "default"
+  name   = "${var.hostname}-disk-data1-xfs.qcow2"
+  pool   = var.libvirt_pool
   size   = var.diskBytes
   format = "qcow2"
 }
 # extra data disk for ext4
 resource "libvirt_volume" "disk_data2" {
-  name   = "${var.hostname}-disk-ext4"
-  pool   = "default"
+  name   = "${var.hostname}-disk-data2-ext4.qcow2"
+  pool   = var.libvirt_pool
   size   = var.diskBytes
   format = "qcow2"
 }
@@ -43,7 +55,7 @@ resource "libvirt_volume" "disk_data2" {
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name           = "${var.hostname}-commoninit.iso"
-  pool           = "default"
+  pool           = var.libvirt_pool
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
 }
