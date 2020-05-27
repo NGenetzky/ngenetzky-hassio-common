@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+SCRIPTDIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
 
 function error { echo -e "[Error] $*"; exit 1; }
 function warn  { echo -e "[Warning] $*"; }
@@ -9,12 +10,13 @@ DOCKER_BINARY=/usr/bin/docker
 DOCKER_REPO=homeassistant
 DOCKER_SERVICE=docker.service
 URL_VERSION="https://version.home-assistant.io/stable.json"
-URL_HA="https://raw.githubusercontent.com/home-assistant/supervised-installer/master/files/ha"
-URL_BIN_HASSIO="https://raw.githubusercontent.com/home-assistant/supervised-installer/master/files/hassio-supervisor"
-URL_BIN_APPARMOR="https://raw.githubusercontent.com/home-assistant/supervised-installer/master/files/hassio-apparmor"
-URL_SERVICE_HASSIO="https://raw.githubusercontent.com/home-assistant/supervised-installer/master/files/hassio-supervisor.service"
-URL_SERVICE_APPARMOR="https://raw.githubusercontent.com/home-assistant/supervised-installer/master/files/hassio-apparmor.service"
-URL_APPARMOR_PROFILE="https://version.home-assistant.io/apparmor.txt"
+FILE_ROOT="${SCRIPTDIR}/supervised-installer-files/"
+URL_HA="file://${FILE_ROOT}/ha"
+URL_BIN_HASSIO="file://${FILE_ROOT}/hassio-supervisor"
+URL_BIN_APPARMOR="file://${FILE_ROOT}/hassio-apparmor"
+URL_SERVICE_HASSIO="file://${FILE_ROOT}/hassio-supervisor.service"
+URL_SERVICE_APPARMOR="file://${FILE_ROOT}/hassio-apparmor.service"
+URL_APPARMOR_PROFILE="file://${FILE_ROOT}/apparmor.txt"
 
 # Check env
 command -v systemctl > /dev/null 2>&1 || error "Only systemd is supported!"
