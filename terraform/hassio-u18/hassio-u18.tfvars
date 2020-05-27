@@ -1,2 +1,2 @@
-cpu=2
-memoryMB=2048
+cpu      = 2
+memoryMB = 2048

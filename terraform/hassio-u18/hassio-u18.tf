@@ -2,13 +2,13 @@
 variable "hostname" { default = "datadisks" }
 variable "domain" { default = "example.com" }
 variable "ip_type" { default = "static" } # dhcp is other valid type
-variable "memoryMB" { default = 1024*1 }
+variable "memoryMB" { default = 1024 * 1 }
 variable "cpu" { default = 1 }
 variable "prefixIP" { default = "192.168.122" }
 variable "octetIP" { default = "32" }
 
 # 20Mb for each additional data disk
-variable "diskBytes" { default = 1024*1024*20 }
+variable "diskBytes" { default = 1024 * 1024 * 20 }
 
 
 
@@ -19,61 +19,61 @@ provider "libvirt" {
 
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
-  name = "${var.hostname}-os_image"
-  pool = "default"
+  name   = "${var.hostname}-os_image"
+  pool   = "default"
   source = "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
 # extra data disk for xfs
 resource "libvirt_volume" "disk_data1" {
-  name           = "${var.hostname}-disk-xfs"
-  pool           = "default"
-  size           = var.diskBytes
-  format         = "qcow2"
+  name   = "${var.hostname}-disk-xfs"
+  pool   = "default"
+  size   = var.diskBytes
+  format = "qcow2"
 }
 # extra data disk for ext4
 resource "libvirt_volume" "disk_data2" {
-  name           = "${var.hostname}-disk-ext4"
-  pool           = "default"
-  size           = var.diskBytes
-  format         = "qcow2"
+  name   = "${var.hostname}-disk-ext4"
+  pool   = "default"
+  size   = var.diskBytes
+  format = "qcow2"
 }
 
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
-          name = "${var.hostname}-commoninit.iso"
-          pool = "default"
-          user_data = data.template_file.user_data.rendered
-          network_config = data.template_file.network_config.rendered
-        }
+  name           = "${var.hostname}-commoninit.iso"
+  pool           = "default"
+  user_data      = data.template_file.user_data.rendered
+  network_config = data.template_file.network_config.rendered
+}
 
 data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
   vars = {
     hostname = var.hostname
-    fqdn = "${var.hostname}.${var.domain}"
+    fqdn     = "${var.hostname}.${var.domain}"
   }
 }
 
 data "template_file" "network_config" {
   template = file("${path.module}/network_config_${var.ip_type}.cfg")
   vars = {
-    domain = var.domain
+    domain   = var.domain
     prefixIP = var.prefixIP
-    octetIP = var.octetIP
+    octetIP  = var.octetIP
   }
 }
 
 
 # Create the machine
 resource "libvirt_domain" "domain-ubuntu" {
-  name = "${var.hostname}-${var.prefixIP}.${var.octetIP}"
+  name   = "${var.hostname}-${var.prefixIP}.${var.octetIP}"
   memory = var.memoryMB
-  vcpu = var.cpu
+  vcpu   = var.cpu
 
-  network_interface { 
-       network_name = "default" 
+  network_interface {
+    network_name = "default"
   }
 
   disk { volume_id = libvirt_volume.os_image.id }
@@ -92,13 +92,13 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   graphics {
-    type = "spice"
+    type        = "spice"
     listen_type = "address"
-    autoport = "true"
+    autoport    = "true"
   }
 }
 
-terraform { 
+terraform {
   required_version = ">= 0.12"
 }
 
