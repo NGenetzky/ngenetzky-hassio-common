@@ -1,0 +1,1 @@
+../../../submodules/home-assistant/supervised-installer/installer.sh
