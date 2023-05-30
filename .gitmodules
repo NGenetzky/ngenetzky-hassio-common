@@ -22,3 +22,6 @@
 [submodule "submodules/cookiecutters/cookiecutter-homeassistant-component"]
 	path = submodules/cookiecutters/cookiecutter-homeassistant-component
 	url = https://github.com/boralyl/cookiecutter-homeassistant-component.git
+[submodule "submodules/cookiecutters/cookiecutter-homeassistant-custom-component"]
+	path = submodules/cookiecutters/cookiecutter-homeassistant-custom-component
+	url = https://github.com/oncleben31/cookiecutter-homeassistant-custom-component.git
