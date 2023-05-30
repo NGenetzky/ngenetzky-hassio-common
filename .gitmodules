@@ -19,3 +19,6 @@
 [submodule "submodules/hassio-addons/repository"]
 	path = submodules/hassio-addons/repository
 	url = https://github.com/hassio-addons/repository.git
+[submodule "submodules/cookiecutters/cookiecutter-homeassistant-component"]
+	path = submodules/cookiecutters/cookiecutter-homeassistant-component
+	url = https://github.com/boralyl/cookiecutter-homeassistant-component.git
